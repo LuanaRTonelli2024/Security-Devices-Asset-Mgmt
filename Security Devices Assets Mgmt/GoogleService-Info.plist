@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyA_v77TfI4fOhrr3g0nvwZoqCHIXjQr400</string>
+	<key>GCM_SENDER_ID</key>
+	<string>391518626963</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>LuanaRTonelli.Security-Devices-Assets-Mgmt</string>
+	<key>PROJECT_ID</key>
+	<string>securitydevassetsmgt</string>
+	<key>STORAGE_BUCKET</key>
+	<string>securitydevassetsmgt.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:391518626963:ios:a0738049c6713f41331966</string>
+	<key>DATABASE_URL</key>
+	<string>https://securitydevassetsmgt-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
