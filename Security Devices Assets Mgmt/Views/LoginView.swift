@@ -11,32 +11,28 @@ struct LoginView: View {
     
     @State private var email = ""
     @State private var password = ""
+    @EnvironmentObject var authManager: AuthManager
     @State private var errorMessage: String?
-    @StateObject private var auth = AuthService.shared
     
     var body: some View {
-        VStack{
+        VStack(spacing: 20){
+            //Spacer()
+            Text("Please fill in the fields below")
+                .font(.headline)
+            //.foregroundStyle()
+            
             TextField("Enter Email", text: $email)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .autocapitalization(.none)
-            
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .keyboardType(.emailAddress)
             
             SecureField("Enter password", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .autocapitalization(.none)
             
-            // error message if I have any
-            if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundStyle(.red)
-                    .font(.caption)
-            }
-            
-            if let errorMessage = errorMessage {
-                Text(errorMessage).foregroundStyle(.red)
-            }
-                
-            Button("Login") {
+            Button(action: {
                 print("Login clicked")
                 guard Validators.isEmailValid(email) else {
                     self.errorMessage = "Invalid Email"
@@ -46,19 +42,45 @@ struct LoginView: View {
                     self.errorMessage = "Invalid Password"
                     return
                 }
-                auth.login(email: email, password: password) { result in
+                authManager.login(email: email, password: password) { result in
                     switch result {
                     case .success:
                         self.errorMessage = nil
                     case .failure(let failure):
-                           self.errorMessage = failure.localizedDescription
+                        self.errorMessage = failure.localizedDescription
                     }
                 }
+            }){
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(email.isEmpty || password.isEmpty ? .gray : .blue)
+                    //.fill(.blue)
+                    .frame(height: 50)
+                    .overlay(
+                        Text("Login")
+                            .foregroundColor(.white)
+                            .font(.headline)
+                    )
+                
             }
             .disabled(email.isEmpty || password.isEmpty)
+            .padding(.horizontal)
+            
+            if let errorMessage = errorMessage {
+                Text(errorMessage).foregroundStyle(.red)
+            }
+            
+            NavigationLink(destination: RegisterView()) {
+                Text("Don't have an account? Register here")
+                    .font(.footnote)
+                    .foregroundStyle(.blue)
+            }
+            //.padding(.top, 10)
+            Spacer()
         }
+        .padding()
     }
 }
+
 
 //#Preview {
 //    LoginView()

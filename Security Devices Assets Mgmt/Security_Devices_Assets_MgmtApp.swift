@@ -20,12 +20,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct Security_Devices_Assets_MgmtApp: App {
     
-    // register app delegate for Firebase setup
-     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @StateObject var authManager = AuthManager()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AuthGate()
+                .environmentObject(AuthManager())
         }
     }
 }
