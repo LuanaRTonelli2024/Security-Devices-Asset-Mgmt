@@ -10,25 +10,62 @@ import SwiftUI
 struct CameraDetailView: View {
     
     let camera: Camera
+    @State private var selectedTab = "Info"
     
     var body: some View {
-        Form {
-            Section("Basic Info"){
-                Text(camera.name)
-                Text(camera.location)
+        VStack {
+            Picker("", selection: $selectedTab) {
+                Text("Info").tag("Info")
+                Text("QR Code").tag("QR Code")
+                Text("Reference View").tag("Reference View")
             }
-            Section("Network Info"){
-                Text(camera.ipAddress)
-                Text(camera.subnetMask)
-                Text(camera.defaultGateway)
+            .pickerStyle(.segmented)
+            .padding()
+                    
+            if selectedTab == "Info" {
+                Form {
+                    Section("Basic Info"){
+                        Text("Name:  \(camera.name)")
+                        Text("Location: \(camera.location)")
+                    }
+                    Section("Network Info"){
+                        Text("IP Address: \(camera.ipAddress)")
+                        Text("Subnet Masl: \(camera.subnetMask)")
+                        Text("Default Gateway: \(camera.defaultGateway)")
+                    }
+                    Section("Admin Info"){
+                        Text("User Name: \(camera.userName)")
+                        Text("Password: \(camera.password)")
+                    }
+                }
             }
-            Section("Admin Info"){
-                Text(camera.userName)
-                Text(camera.password)
+            else if selectedTab == "QR Code" {
+                VStack {
+                    Text("QR Code View")
+                        .font(.headline)
+                    if let id = camera.id {
+                        QRCodeView(data: id)
+                    } else {
+                        Text("Camera ID not available")
+                            .foregroundColor(.red)
+                    }
+
+                    Spacer()
+                    }
+                    .padding()
+            }
+            else {
+                VStack {
+                    Text("Reference Camera View")
+                        .font(.headline)
+                    Spacer()
+                }
+                .padding()
             }
         }
     }
 }
+
 
 //#Preview {
 //    CameraDetailView()
