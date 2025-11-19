@@ -80,6 +80,7 @@ struct RegisterView: View {
                 Text(errorMessage).foregroundStyle(.red)
             }
             
+            //success message and login navigation
             if registrationSuccess {
                 VStack(spacing: 30) {
                     Text("✅ User created successfully.")
