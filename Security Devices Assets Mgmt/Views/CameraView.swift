@@ -17,38 +17,45 @@ struct CameraView: View {
     
     var body: some View {
         VStack{
-            VStack{
+            NavigationLink(destination: CameraAddView(company: company)) {
+                Label("New Camera", systemImage: "plus")
+                    .font(.headline)
+                    .padding(8)
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(8)
+            }
+            .padding(.horizontal)
+            //VStack{
                 List(firebaseManager.cameras) { camera in
                     NavigationLink(destination: CameraDetailView(camera: camera)) {
                         CameraRowView(camera: camera)
                         EmptyView()
                     }
-                }
+                //}
                 //.onDelete(perform: deleteCamera)
                 
-                HStack {
+                //HStack {
                     //TextField
-                    TextField("Enter a new Camera", text: $newCameraName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    //TextField("Enter a new Camera", text: $newCameraName)
+                        //.textFieldStyle(RoundedBorderTextFieldStyle())
                     
                     //Add button
-                    Button {
-                        if !newCameraName.isEmpty {
-                            firebaseManager.addCamera(name: newCameraName, for: company)
+                    //Button {
+                        //if !newCameraName.isEmpty {
+                            //firebaseManager.addCamera(name: newCameraName, for: company)
                             //reset the ToDo title
-                            newCameraName = ""
-                        }
-                    }
-                    label: {
-                        Image(systemName: "plus")
-                    }
-                }
+                            //newCameraName = ""
+                        //}
+                    //}
+                    //label: {
+                        //Image(systemName: "plus")
+                    //}
+                //}
             }
             .onAppear {
                 firebaseManager.fetchCamerasCompany(for: company)
             }
             .padding()
-            //}
             .navigationTitle("Cameras")
         }
     }

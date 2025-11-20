@@ -56,19 +56,24 @@ class FirebaseCameraViewModel: ObservableObject {
         }
                                                                     
     //add a Camera
-    func addCamera(name: String, for company: Company){
+    func addCamera(name: String,
+                   location: String,
+                   ipAddress: String,
+                   subnetMask: String,
+                   defaultGateway: String,
+                   userName: String,
+                   password: String,
+                   for company: Company){
         guard let companyId = company.id else { return }
-        
         let newCamera = Camera(
-            name: name,
-            location: "Defaul Location",
-            ipAddress: "123.123.123.001",
-            subnetMask: "255.255.255.0",
-            defaultGateway: "123.123.123.0",
-            userName: "Admin",
-            password: "123",
-            companyId: companyId
-        )
+                name: name,
+                location: location,
+                ipAddress: ipAddress,
+                subnetMask: subnetMask,
+                defaultGateway: defaultGateway,
+                userName: userName,
+                password: password,
+                companyId: companyId)
         do{
             try db.collection("cameras").addDocument(from: newCamera)
         }
