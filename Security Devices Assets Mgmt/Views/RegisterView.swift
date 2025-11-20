@@ -14,6 +14,7 @@ struct RegisterView: View {
     @State private var displayName = ""
     @EnvironmentObject var authManager: AuthManager
     @State private var errorMessage: String?
+    @State private var registrationSuccess = false
     
     var body: some View {
         VStack(spacing: 20){
@@ -46,10 +47,15 @@ struct RegisterView: View {
                     self.errorMessage = "Invalid Password"
                     return
                 }
+                guard !displayName.trimmingCharacters(in: .whitespaces).isEmpty else {
+                    self.errorMessage = "Display name is required"
+                    return
+                }
                 authManager.register(email: email, password: password, displayName: displayName) { result in
                     switch result {
                     case .success:
                         self.errorMessage = nil
+                        self.registrationSuccess = true
                     case .failure(let failure):
                         self.errorMessage = failure.localizedDescription
                     }
@@ -69,10 +75,21 @@ struct RegisterView: View {
             .disabled(email.isEmpty || password.isEmpty || displayName.isEmpty)
             .padding(.horizontal)
             
+            //error message
             if let errorMessage = errorMessage {
                 Text(errorMessage).foregroundStyle(.red)
             }
             
+            //success message and login navigation
+            if registrationSuccess {
+                VStack(spacing: 30) {
+                    Text("✅ User created successfully.")
+                        .foregroundColor(.green)
+                    NavigationLink("Click here to Login", destination: LoginView())
+                        .font(.headline)
+                }
+            }
+
             Spacer()
         }
         .padding()
