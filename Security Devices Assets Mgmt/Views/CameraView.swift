@@ -12,8 +12,10 @@ struct CameraView: View {
     
     let company: Company
     
-    @State private var newCameraName: String = ""
+    //@State private var newCameraName: String = ""
     @StateObject var firebaseManager = FirebaseCameraViewModel.shared
+    //@State private var selectedCamera: Camera? = nil
+    //@State private var isEditing = false //swipe action
     
     var body: some View {
         VStack{
@@ -25,39 +27,25 @@ struct CameraView: View {
                     .cornerRadius(8)
             }
             .padding(.horizontal)
-            //VStack{
-                List(firebaseManager.cameras) { camera in
-                    NavigationLink(destination: CameraDetailView(camera: camera)) {
-                        CameraRowView(camera: camera)
-                        EmptyView()
+            
+            List {
+                ForEach($firebaseManager.cameras) { $camera in
+                    NavigationLink(destination: CameraDetailView(company: company, camera: $camera)) {
+                        VStack(alignment: .leading) {
+                            Text(camera.name)
+                                .font(.headline)
+                            Text(camera.location)
+                                .font(.subheadline)
+                        }
                     }
-                //}
-                //.onDelete(perform: deleteCamera)
-                
-                //HStack {
-                    //TextField
-                    //TextField("Enter a new Camera", text: $newCameraName)
-                        //.textFieldStyle(RoundedBorderTextFieldStyle())
-                    
-                    //Add button
-                    //Button {
-                        //if !newCameraName.isEmpty {
-                            //firebaseManager.addCamera(name: newCameraName, for: company)
-                            //reset the ToDo title
-                            //newCameraName = ""
-                        //}
-                    //}
-                    //label: {
-                        //Image(systemName: "plus")
-                    //}
-                //}
+                }
             }
-            .onAppear {
-                firebaseManager.fetchCamerasCompany(for: company)
-            }
-            .padding()
-            .navigationTitle("Cameras")
         }
+        .onAppear {
+            firebaseManager.fetchCamerasCompany(for: company)
+        }
+        .navigationTitle("Cameras")
+        .padding()
     }
 }
 
