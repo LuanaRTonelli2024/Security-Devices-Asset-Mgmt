@@ -9,10 +9,22 @@ import SwiftUI
 
 struct CameraDetailView: View {
     
-    let camera: Camera
+    let company: Company
+    //@State var camera: Camera
+    @Binding var camera: Camera
     @State private var selectedTab = "Info"
     
     var body: some View {
+        
+        NavigationLink(destination: CameraEditView(company: company, camera: $camera)) {
+            Label("Edit", systemImage: "edit")
+                .font(.headline)
+                .padding(8)
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(8)
+        }
+        .padding(.horizontal)
+        
         VStack {
             Picker("", selection: $selectedTab) {
                 Text("Info").tag("Info")
@@ -30,7 +42,7 @@ struct CameraDetailView: View {
                     }
                     Section("Network Info"){
                         Text("IP Address: \(camera.ipAddress)")
-                        Text("Subnet Masl: \(camera.subnetMask)")
+                        Text("Subnet Mask: \(camera.subnetMask)")
                         Text("Default Gateway: \(camera.defaultGateway)")
                     }
                     Section("Admin Info"){
