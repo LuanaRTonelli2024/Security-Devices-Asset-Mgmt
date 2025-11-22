@@ -27,7 +27,7 @@ struct CameraEditView: View {
     //@State private var newCameraUserName: String = ""
     //@State private var newCameraPassword: String = ""
         
-    @State private var showSuccessMessage = false //success message
+    //@State private var showSuccessMessage = false //success message
     @State private var selectedTab = "Info" //picker
 
     var body: some View {
@@ -79,7 +79,7 @@ struct CameraEditView: View {
                     
                     Button ("Save") {
                         firebaseManager.updateCamera(camera: camera)
-                        showSuccessMessage = true
+                        //showSuccessMessage = true
                         dismiss()
                     }
                 }

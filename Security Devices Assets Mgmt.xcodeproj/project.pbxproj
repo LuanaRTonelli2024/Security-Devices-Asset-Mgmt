@@ -10,6 +10,7 @@
 		86A515572EC6C80500C7E8D3 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 86A515562EC6C80500C7E8D3 /* FirebaseAuth */; };
 		86A515592EC6C81200C7E8D3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 86A515582EC6C81200C7E8D3 /* FirebaseCore */; };
 		86A5155B2EC6C82600C7E8D3 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 86A5155A2EC6C82600C7E8D3 /* FirebaseFirestore */; };
+		86E93E432ED0FA1800D37035 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 86E93E422ED0FA1800D37035 /* CodeScanner */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86E93E432ED0FA1800D37035 /* CodeScanner in Frameworks */,
 				86A515592EC6C81200C7E8D3 /* FirebaseCore in Frameworks */,
 				86A515572EC6C80500C7E8D3 /* FirebaseAuth in Frameworks */,
 				86A5155B2EC6C82600C7E8D3 /* FirebaseFirestore in Frameworks */,
@@ -85,6 +87,7 @@
 				86A515562EC6C80500C7E8D3 /* FirebaseAuth */,
 				86A515582EC6C81200C7E8D3 /* FirebaseCore */,
 				86A5155A2EC6C82600C7E8D3 /* FirebaseFirestore */,
+				86E93E422ED0FA1800D37035 /* CodeScanner */,
 			);
 			productName = "Security Devices Assets Mgmt";
 			productReference = 869E80E72EC6A5D6002F3ECD /* Security Devices Assets Mgmt.app */;
@@ -116,6 +119,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				86A515542EC6C7D100C7E8D3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				86E93E412ED0FA1800D37035 /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 869E80E82EC6A5D6002F3ECD /* Products */;
@@ -277,6 +281,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Security Devices Assets Mgmt/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Security-Devices-Assets-Mgmt-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -305,6 +310,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Security Devices Assets Mgmt/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Security-Devices-Assets-Mgmt-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -355,6 +361,14 @@
 				minimumVersion = 12.4.0;
 			};
 		};
+		86E93E412ED0FA1800D37035 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/CodeScanner";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -372,6 +386,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 86A515542EC6C7D100C7E8D3 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		86E93E422ED0FA1800D37035 /* CodeScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86E93E412ED0FA1800D37035 /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			productName = CodeScanner;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
