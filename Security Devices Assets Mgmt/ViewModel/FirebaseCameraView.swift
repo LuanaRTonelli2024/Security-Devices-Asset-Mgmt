@@ -37,6 +37,10 @@ class FirebaseCameraViewModel: ObservableObject {
         }
     }
     
+    func getCameraById(_ id: String) -> Camera? {
+        return cameras.first(where: { $0.id == id })
+    }
+
     func fetchCamerasCompany(for company: Company) {
         guard let companyId = company.id else { return }
         

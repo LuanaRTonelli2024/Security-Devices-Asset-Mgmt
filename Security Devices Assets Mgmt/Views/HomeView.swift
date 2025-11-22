@@ -12,11 +12,20 @@ import FirebaseFirestore
 
 struct HomeView: View {
     
+    //enum Tab { case home, settings, search }
+    
     @EnvironmentObject var authManager: AuthManager
     @State private var newCompanyName: String = ""
     @StateObject var firebaseManager = FirebaseCompanyViewModel.shared
     
+    //@State private var selected: Tab = .home
+    //@State private var isSearching: Bool = false //for the search box
+    //@State private var query: String = "" //will be binded ($query) to the textfield
+    //@FocusState private var searchFocused: Bool //this is will initia
+
+    
     var body: some View {
+        //ZStack(){
         VStack{
             Text("Welcome \(authManager.user?.email ?? "User")")
                 .font(.title)

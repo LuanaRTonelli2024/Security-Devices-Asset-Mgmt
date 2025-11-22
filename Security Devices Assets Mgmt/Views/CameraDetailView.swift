@@ -17,7 +17,7 @@ struct CameraDetailView: View {
     var body: some View {
         
         NavigationLink(destination: CameraEditView(company: company, camera: $camera)) {
-            Label("Edit", systemImage: "edit")
+            Label("Edit", systemImage: "square.and.pencil")
                 .font(.headline)
                 .padding(8)
                 .background(Color(.secondarySystemBackground))

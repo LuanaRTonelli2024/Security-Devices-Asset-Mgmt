@@ -7,15 +7,17 @@
 
 import SwiftUI
 import FirebaseCore
+import CodeScanner
 
 struct CameraView: View {
     
-    let company: Company
+    let company: Company //companyID
     
-    //@State private var newCameraName: String = ""
-    @StateObject var firebaseManager = FirebaseCameraViewModel.shared
-    //@State private var selectedCamera: Camera? = nil
-    //@State private var isEditing = false //swipe action
+    @StateObject var firebaseManager = FirebaseCameraViewModel.shared //Firebase
+    
+    //scanning QR code
+    @State private var isShowingScanner = false
+    @State private var scannedCode: String?
     
     var body: some View {
         VStack{
@@ -29,23 +31,74 @@ struct CameraView: View {
             .padding(.horizontal)
             
             List {
-                ForEach($firebaseManager.cameras) { $camera in
-                    NavigationLink(destination: CameraDetailView(company: company, camera: $camera)) {
-                        VStack(alignment: .leading) {
-                            Text(camera.name)
-                                .font(.headline)
-                            Text(camera.location)
-                                .font(.subheadline)
+                if filteredCameraIndices.isEmpty, scannedCode != nil {
+                    Text("No camera found for this QR code.")
+                        .foregroundColor(.red)
+                } else {
+                    ForEach(filteredCameraIndices, id: \.self) { index in
+                        NavigationLink(
+                            destination: CameraDetailView(company: company, camera: $firebaseManager.cameras[index])
+                        ) {
+                            VStack(alignment: .leading) {
+                                Text(firebaseManager.cameras[index].name)
+                                    .font(.headline)
+                                Text(firebaseManager.cameras[index].location)
+                                    .font(.subheadline)
+                            }
                         }
                     }
                 }
+            }
+
+            HStack {
+                Button("Scan QR Code") {
+                    isShowingScanner = true
+                }
+                .sheet(isPresented: $isShowingScanner) {
+                    CodeScannerView(
+                        codeTypes: [.qr],
+                        simulatedData: "gmssxysHg6SDXix2o9Gg",
+                        completion: handleScan
+                    )
+                }
+                
+                
             }
         }
         .onAppear {
             firebaseManager.fetchCamerasCompany(for: company)
         }
+        .onChange(of: firebaseManager.cameras.count) {
+            if scannedCode != nil {
+                scannedCode = nil
+            }
+        }
         .navigationTitle("Cameras")
         .padding()
+    }
+    
+    
+    private var filteredCameraIndices: [Int] {
+        if let scannedCode = scannedCode,
+           let camera = firebaseManager.getCameraById(scannedCode),
+           let index = firebaseManager.cameras.firstIndex(where: { $0.id == camera.id }) {
+            return [index]
+        } else if scannedCode != nil {
+            return [] // Nenhuma encontrada
+        } else {
+            return Array(firebaseManager.cameras.indices)
+        }
+    }
+
+    
+    func handleScan(result: Result<ScanResult, ScanError>) {
+        isShowingScanner = false
+        switch result {
+        case .success(let scanResult):
+            scannedCode = scanResult.string
+        case .failure(let error):
+            print("Scanning failed: \(error.localizedDescription)")
+        }
     }
 }
 
