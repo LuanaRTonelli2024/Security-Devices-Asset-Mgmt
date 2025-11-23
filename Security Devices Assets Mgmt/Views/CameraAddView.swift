@@ -24,8 +24,7 @@ struct CameraAddView: View {
     @State private var newCameraDefaultGateway: String = ""
     @State private var newCameraUserName: String = ""
     @State private var newCameraPassword: String = ""
-    
-    @State private var showSuccessMessage = false //success message
+
     @State private var selectedTab = "Info" //picker
     
     var body: some View {
@@ -65,15 +64,9 @@ struct CameraAddView: View {
                             password: newCameraPassword,
                             for: company
                         )
-                        showSuccessMessage = true
                         dismiss()
                     }
-                    
-                    if showSuccessMessage {
-                        Text("✅ Camera saved successfully.")
-                            .foregroundColor(.green)
-                            .font(.subheadline)
-                    }
+                    .disabled(newCameraName.isEmpty || newCameraLocation.isEmpty)
                 }
             }
             else if selectedTab == "QR Code" {

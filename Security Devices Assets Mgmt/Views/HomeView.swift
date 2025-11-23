@@ -17,7 +17,7 @@ struct HomeView: View {
     @EnvironmentObject var authManager: AuthManager
     @State private var newCompanyName: String = ""
     @StateObject var firebaseManager = FirebaseCompanyViewModel.shared
-    
+    @State private var showNewCompany = false
     @State private var selected: Tab = .home
     @State private var isSearching: Bool = false //for the search box
     @State private var query: String = "" //will be binded ($query) to the textfield
@@ -28,9 +28,6 @@ struct HomeView: View {
             Group {
                 switch selected {
                 case .home:
-                    //Text("🏠 Home")
-                    //    .font(.largeTitle.bold())
-                    //    .background(Color(.systemBackground))
                     VStack{
                         Text("Welcome \(authManager.user?.email ?? "User")")
                             .font(.title)
@@ -47,14 +44,11 @@ struct HomeView: View {
                                 .cornerRadius(10)
                         }
                         
+                        Spacer()
                         
-                    }
-                    
-                case .company:
-                    Text(" Companies")
-                    VStack{
+                        Text("Please select the company: ")
+                        
                         List(firebaseManager.companies) { company in
-                            Text("Please select the company: ")
                             NavigationLink(destination: CameraView(company: company)) {
                                 HStack {
                                     Text(company.name)
@@ -63,29 +57,39 @@ struct HomeView: View {
                                 }
                             }
                         }
-                        HStack {
-                            //TextField
-                            TextField("Enter a new Company", text: $newCompanyName)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                            
-                            //Add button
-                            Button {
-                                if !newCompanyName.isEmpty {
-                                    firebaseManager.addCompany(name: newCompanyName)
-                                    //reset the Company name
-                                    newCompanyName = ""
+                    }
+                
+                case .company:
+                    NavigationView {
+                        List(firebaseManager.companies) { company in
+                            Text(company.name)
+                        }
+                        .navigationTitle("Companies")
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button {
+                                    showNewCompany = true
+                                } label: {
+                                    Image(systemName: "plus")
                                 }
-                            } label: {
-                                Image(systemName: "plus")
+                            }
+                        }
+                        .sheet(isPresented: $showNewCompany) {
+                            CompanyAddView { newCompany in
+                                Task {
+                                    firebaseManager.addCompany(newCompany)
+                                }
                             }
                         }
                     }
-                    
+
                 case .profile:
-                Text("⚙️ Settings")
-                    .font(.largeTitle.bold())
-                    .background(Color(.systemBackground))
-                
+                    VStack {
+                        Text("⚙️ Settings")
+                            .font(.largeTitle.bold())
+                            .background(Color(.systemBackground))
+                    }
+                    
                 case .search:
                     VStack(alignment: .leading, spacing: 12){
                         Text("Search")
@@ -122,7 +126,7 @@ struct HomeView: View {
                     }
                     
                     //Company
-                    TabButton(title: "Company", system: "building.2.crop.circle", active: selected == .company) {
+                    TabButton(title: "Companies", system: "building.2.fill", active: selected == .company) {
                         withAnimation(.easeInOut) {
                             selected = .company
                             
@@ -191,7 +195,7 @@ struct HomeView: View {
             }.padding(.top, 0)
         }
     }
-
+    
     private func collapseSearch() {
         query = ""
         searchFocused = false
@@ -201,25 +205,25 @@ struct HomeView: View {
 
 //custom Tab View
 struct TabButton: View {
-let title: String
-let system: String //system image name
-let active: Bool //button is clicked or not
-let action: () -> Void //a null type function
-
-var body: some View {
-    Button(action: action) {
-        VStack(spacing: 4){
-            Image(systemName: system)
-                .font(.system(size: 18, weight: .semibold))
-            
-            Text(title)
-                .font(.caption2.bold())
-        }
-        .foregroundStyle(active ? .blue : .secondary)
-        .frame(width: 72)
-        .padding(.vertical, 2)
-    }.buttonStyle(.plain)
-}
+    let title: String
+    let system: String //system image name
+    let active: Bool //button is clicked or not
+    let action: () -> Void //a null type function
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 4){
+                Image(systemName: system)
+                    .font(.system(size: 18, weight: .semibold))
+                
+                Text(title)
+                    .font(.caption2.bold())
+            }
+            .foregroundStyle(active ? .blue : .secondary)
+            .frame(width: 72)
+            .padding(.vertical, 2)
+        }.buttonStyle(.plain)
+    }
 }
     
 

@@ -14,22 +14,15 @@ struct CameraView: View {
     let company: Company //companyID
     
     @StateObject var firebaseManager = FirebaseCameraViewModel.shared //Firebase
-    
-    //scanning QR code
+    //Toolbar
+    @State private var showNewCamera = false
     @State private var isShowingScanner = false
+    //Scan QR code
     @State private var scannedCode: String?
     
+       
     var body: some View {
         VStack{
-            NavigationLink(destination: CameraAddView(company: company)) {
-                Label("New Camera", systemImage: "plus")
-                    .font(.headline)
-                    .padding(8)
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(8)
-            }
-            .padding(.horizontal)
-            
             List {
                 if filteredCameraIndices.isEmpty, scannedCode != nil {
                     Text("No camera found for this QR code.")
@@ -49,21 +42,6 @@ struct CameraView: View {
                     }
                 }
             }
-
-            HStack {
-                Button("Scan QR Code") {
-                    isShowingScanner = true
-                }
-                .sheet(isPresented: $isShowingScanner) {
-                    CodeScannerView(
-                        codeTypes: [.qr],
-                        simulatedData: "gmssxysHg6SDXix2o9Gg",
-                        completion: handleScan
-                    )
-                }
-                
-                
-            }
         }
         .onAppear {
             firebaseManager.fetchCamerasCompany(for: company)
@@ -72,6 +50,32 @@ struct CameraView: View {
             if scannedCode != nil {
                 scannedCode = nil
             }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                HStack{
+                    Button {
+                        isShowingScanner = true
+                    } label: {
+                        Image(systemName: "qrcode.viewfinder")
+                    }
+                    Button {
+                        showNewCamera = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showNewCamera){
+            CameraAddView(company: company)
+        }
+        .sheet(isPresented: $isShowingScanner) {
+            CodeScannerView(
+                codeTypes: [.qr],
+                simulatedData: "gmssxysHg6SDXix2o9Gg",
+                completion: handleScan
+            )
         }
         .navigationTitle("Cameras")
         .padding()
@@ -84,13 +88,12 @@ struct CameraView: View {
            let index = firebaseManager.cameras.firstIndex(where: { $0.id == camera.id }) {
             return [index]
         } else if scannedCode != nil {
-            return [] // Nenhuma encontrada
+            return []
         } else {
             return Array(firebaseManager.cameras.indices)
         }
     }
 
-    
     func handleScan(result: Result<ScanResult, ScanError>) {
         isShowingScanner = false
         switch result {
