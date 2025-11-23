@@ -6,13 +6,53 @@
 //
 
 import SwiftUI
+import FirebaseCore
+import FirebaseFirestore
 
 struct CompanyView: View {
+    
+    @StateObject var firebaseManager = FirebaseCompanyViewModel.shared //Firebase
+    @State private var showNewCamera = false
+
+    
+       
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            List {
+                ForEach(firebaseManager.companies) { company in
+                    HStack{
+                        //title
+                        Text(company.name)
+                        
+                        //spacer
+                        Spacer()
+                    }
+                }
+            }
+            .onAppear {
+                firebaseManager.fetchCompanies()
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    HStack{
+                        Button {
+                            showNewCamera = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                }
+            }
+            .sheet(isPresented: $showNewCamera){
+                CompanyAddView()
+            }
+            .navigationTitle("Companies")
+            .padding()
+        }
     }
 }
 
-#Preview {
-    CompanyView()
-}
+
+//#Preview {
+//    CompanyView()
+//}

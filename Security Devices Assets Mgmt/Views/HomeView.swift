@@ -7,27 +7,54 @@
 
 import SwiftUI
 import FirebaseAuth
-import FirebaseCore
-import FirebaseFirestore
+//import FirebaseCore
+//import FirebaseFirestore
 
 struct HomeView: View {
     
-    enum Tab { case home, company, profile, search }
     
     @EnvironmentObject var authManager: AuthManager
-    @State private var newCompanyName: String = ""
     @StateObject var firebaseManager = FirebaseCompanyViewModel.shared
-    @State private var showNewCompany = false
+    
+    enum Tab { case home, companies, profile}
+    
     @State private var selected: Tab = .home
     @State private var isSearching: Bool = false //for the search box
     @State private var query: String = "" //will be binded ($query) to the textfield
     @FocusState private var searchFocused: Bool //this is will initia
     
+
     var body: some View {
         ZStack {
             Group {
                 switch selected {
+                    
                 case .home:
+                    NavigationStack {
+                        VStack(spacing: 25) {
+                            Text("Security Devices Asset Management")
+                                .font(.largeTitle.bold())
+                                .background(Color(.systemBackground))
+                                                            
+                            Text("Please select the company:")
+                                .font(.title2)
+                                .background(Color(.systemBackground))
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.top, 20)
+                        
+                        List(firebaseManager.companies) { company in
+                            NavigationLink(destination: CameraView(company: company)) {
+                                Label(company.name, systemImage: "building")
+                                    .font(.body)
+                            }
+                        }
+                    }
+                    
+                case .companies:
+                    CompanyView()
+                    
+                case .profile:
                     VStack{
                         Text("Welcome \(authManager.user?.email ?? "User")")
                             .font(.title)
@@ -45,68 +72,25 @@ struct HomeView: View {
                         }
                         
                         Spacer()
-                        
-                        Text("Please select the company: ")
-                        
-                        List(firebaseManager.companies) { company in
-                            NavigationLink(destination: CameraView(company: company)) {
-                                HStack {
-                                    Text(company.name)
-                                    Spacer()
-                                    EmptyView()
-                                }
-                            }
-                        }
                     }
-                
-                case .company:
-                    NavigationView {
-                        List(firebaseManager.companies) { company in
-                            Text(company.name)
-                        }
-                        .navigationTitle("Companies")
-                        .toolbar {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button {
-                                    showNewCompany = true
-                                } label: {
-                                    Image(systemName: "plus")
-                                }
-                            }
-                        }
-                        .sheet(isPresented: $showNewCompany) {
-                            CompanyAddView { newCompany in
-                                Task {
-                                    firebaseManager.addCompany(newCompany)
-                                }
-                            }
-                        }
-                    }
-
-                case .profile:
-                    VStack {
-                        Text("⚙️ Settings")
-                            .font(.largeTitle.bold())
-                            .background(Color(.systemBackground))
-                    }
-                    
-                case .search:
-                    VStack(alignment: .leading, spacing: 12){
-                        Text("Search")
-                            .font(.largeTitle.bold())
                         
-                        if query.isEmpty{
-                            Text("Type Something to Search...")
-                                .foregroundStyle(.secondary)
-                        } else {
-                            Text("Results for: \(query)")
-                                .foregroundStyle(.secondary)
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding()
-                    .background(Color(.systemBackground))
+//                case .search:
+//                    VStack(alignment: .leading, spacing: 12){
+//                        Text("Search")
+//                            .font(.largeTitle.bold())
+//
+//                        if query.isEmpty{
+//                            Text("Type Something to Search...")
+//                                .foregroundStyle(.secondary)
+//                        } else {
+//                            Text("Results for: \(query)")
+//                                .foregroundStyle(.secondary)
+//                        }
+//
+//                        Spacer()
+//                    }
+//                    .padding()
+ //                   .background(Color(.systemBackground))
                 }
             }
             .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -121,26 +105,27 @@ struct HomeView: View {
                             selected = .home
                             
                             //collapse the search box
-                            collapseSearch()
+                            //collapseSearch()
                         }
                     }
                     
-                    //Company
-                    TabButton(title: "Companies", system: "building.2.fill", active: selected == .company) {
+                    //Companies
+                    TabButton(title: "Companies", system: "building.2.fill", active: selected == .companies) {
                         withAnimation(.easeInOut) {
-                            selected = .company
+                            selected = .companies
                             
                             //collapse the search box
-                            collapseSearch()
+                            //collapseSearch()
                         }
                     }
-                    //Setting
-                    TabButton(title: "Profile", system: "person.crop.circle.fill", active: selected == .profile) {
+                    
+                    //Profile
+                    TabButton(title: "Profile", system: "person.crop.circle", active: selected == .profile) {
                         withAnimation(.easeInOut) {
                             selected = .profile
                             
                             //collapse the search box
-                            collapseSearch()
+                            //collapseSearch()
                         }
                     }
                     
@@ -148,44 +133,44 @@ struct HomeView: View {
                     Spacer(minLength: 0)
                     
                     //Search botton (expanded)
-                    if isSearching {
-                        HStack(spacing: 8){
-                            Image(systemName: "magnifyingglass")
-                            TextField("Search...", text: $query)
-                                .textInputAutocapitalization(.never)
-                                .autocorrectionDisabled()
-                                .focused($searchFocused)
-                            Button {
-                                withAnimation(.easeInOut) {
-                                    //collapse the search
-                                    collapseSearch()
-                                    selected = .home
-                                }
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 12)
-                        .background(RoundedRectangle(cornerRadius: 14).fill(Color(.secondarySystemBackground)))
-                        .transition(.move(edge: .trailing).combined(with: .opacity))
-                    } else{
-                        Button{
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
-                                isSearching = true
-                                selected = .search
-                                searchFocused = false
-                            }
-                        } label: {
-                            Image(systemName: "magnifyingglass")
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(.primary)
-                                .padding(10)
-                                .background(Circle().fill(Color(.secondarySystemBackground)))
-                        }.buttonStyle(.plain)
-                            .transition(.move(edge: .trailing).combined(with: .opacity))
-                    }
+//                    if isSearching {
+//                        HStack(spacing: 8){
+//                            Image(systemName: "magnifyingglass")
+//                            TextField("Search...", text: $query)
+//                                .textInputAutocapitalization(.never)
+//                                .autocorrectionDisabled()
+//                                .focused($searchFocused)
+//                            Button {
+//                                withAnimation(.easeInOut) {
+//                                    //collapse the search
+//                                    collapseSearch()
+//                                    selected = .home
+//                                }
+//                            } label: {
+//                                Image(systemName: "xmark.circle.fill")
+//                                    .foregroundStyle(.secondary)
+//                            }
+//                        }
+//                        .padding(.vertical, 10)
+//                        .padding(.horizontal, 12)
+//                        .background(RoundedRectangle(cornerRadius: 14).fill(Color(.secondarySystemBackground)))
+//                        .transition(.move(edge: .trailing).combined(with: .opacity))
+//                    } else{
+//                        Button{
+//                            withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
+//                                isSearching = true
+//                                selected = .search
+//                                searchFocused = false
+//                            }
+//                        } label: {
+//                            Image(systemName: "magnifyingglass")
+//                                .font(.system(size: 20, weight: .semibold))
+//                                .foregroundStyle(.primary)
+//                                .padding(10)
+//                                .background(Circle().fill(Color(.secondarySystemBackground)))
+//                        }.buttonStyle(.plain)
+//                            .transition(.move(edge: .trailing).combined(with: .opacity))
+//                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
@@ -196,11 +181,11 @@ struct HomeView: View {
         }
     }
     
-    private func collapseSearch() {
-        query = ""
-        searchFocused = false
-        isSearching = false
-    }
+//    private func collapseSearch() {
+//        query = ""
+//        searchFocused = false
+//        isSearching = false
+//    }
 }
 
 //custom Tab View
@@ -225,8 +210,6 @@ struct TabButton: View {
         }.buttonStyle(.plain)
     }
 }
-    
-
     
 //#Preview {
 //    HomeView()
