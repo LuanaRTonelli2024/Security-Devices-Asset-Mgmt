@@ -10,21 +10,12 @@ import SwiftUI
 struct CameraDetailView: View {
     
     let company: Company
-    //@State var camera: Camera
     @Binding var camera: Camera
-    @State private var selectedTab = "Info"
+    @State private var selectedTab = "Info" //picker
+    @State private var showEdit = false //toolbar
+    
     
     var body: some View {
-        
-        NavigationLink(destination: CameraEditView(company: company, camera: $camera)) {
-            Label("Edit", systemImage: "square.and.pencil")
-                .font(.headline)
-                .padding(8)
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(8)
-        }
-        .padding(.horizontal)
-        
         VStack {
             Picker("", selection: $selectedTab) {
                 Text("Info").tag("Info")
@@ -33,7 +24,7 @@ struct CameraDetailView: View {
             }
             .pickerStyle(.segmented)
             .padding()
-                    
+            
             if selectedTab == "Info" {
                 Form {
                     Section("Basic Info"){
@@ -53,18 +44,18 @@ struct CameraDetailView: View {
             }
             else if selectedTab == "QR Code" {
                 VStack {
-                    Text("QR Code View")
-                        .font(.headline)
+                    //Text("QR Code View")
+                    //    .font(.headline)
                     if let id = camera.id {
                         QRCodeView(data: id)
                     } else {
                         Text("Camera ID not available")
                             .foregroundColor(.red)
                     }
-
+                    
                     Spacer()
-                    }
-                    .padding()
+                }
+                .padding()
             }
             else {
                 VStack {
@@ -74,6 +65,18 @@ struct CameraDetailView: View {
                 }
                 .padding()
             }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showEdit = true
+                } label: {
+                    Image(systemName: "square.and.pencil")
+                }
+            }
+        }
+        .sheet(isPresented: $showEdit){
+            CameraEditView(company: company, camera: $camera)
         }
     }
 }
