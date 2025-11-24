@@ -19,7 +19,7 @@ struct LoginView: View {
             //Spacer()
             Text("Please fill in the fields below")
                 .font(.headline)
-            //.foregroundStyle()
+
             
             TextField("Enter Email", text: $email)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -74,7 +74,7 @@ struct LoginView: View {
                     .font(.footnote)
                     .foregroundStyle(.blue)
             }
-            //.padding(.top, 10)
+            
             Spacer()
         }
         .padding()

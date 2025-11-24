@@ -17,55 +17,63 @@ struct ProfileView: View {
     @State private var errorMessage: String?
     
     var body: some View {
-        Form {
-            Section("Profile") {
-                Text("Email: \(authManager.currentUser?.email ?? "-")")
-                Text("Display Name: \(authManager.currentUser?.displayName ?? "-")")
-                Text("Is Active: \(authManager.currentUser?.isActive == true ? "Yes" : "False")")
-            }
+        VStack {
+            Text("Profile")
+                .font(.headline)
+                .background(Color(.systemBackground))
             
-            Section("Update Display Name") {
-                TextField("New Display Name", text: $newName)
-                Button("Save") {
-                    guard !newName.trimmingCharacters(in: .whitespaces).isEmpty
-                    else {
-                        self.errorMessage = "display name cannot be empty"
-                        return
-                    }
-                    
-                    authManager.updateProfile(displayName: newName) { result in
-                        switch result {
-                        case .success:
-                            self.errorMessage = nil
-                        case .failure(let failure):
-                            self.errorMessage = failure.localizedDescription
+            
+            Form {
+                Section("Profile") {
+                    Text("Email: \(authManager.currentUser?.email ?? "-")")
+                    Text("Display Name: \(authManager.currentUser?.displayName ?? "-")")
+                    Text("Is Active: \(authManager.currentUser?.isActive == true ? "Yes" : "False")")
+                }
+                
+                Section("Update Display Name") {
+                    TextField("New Display Name", text: $newName)
+                    Button("Save") {
+                        guard !newName.trimmingCharacters(in: .whitespaces).isEmpty
+                        else {
+                            self.errorMessage = "display name cannot be empty"
+                            return
+                        }
+                        
+                        authManager.updateProfile(displayName: newName) { result in
+                            switch result {
+                            case .success:
+                                self.errorMessage = nil
+                            case .failure(let failure):
+                                self.errorMessage = failure.localizedDescription
+                            }
                         }
                     }
                 }
-            }
-            
-            if let errorMessage = errorMessage {
-                Text(errorMessage).foregroundStyle(.red)
-            }
-            
-            Button(role: .destructive) {
-                let result = authManager.logout()
-                if case .failure(let failure) = result {
-                    self.errorMessage = failure.localizedDescription
-                } else {
-                    self.errorMessage = nil
+                
+                if let errorMessage = errorMessage {
+                    Text(errorMessage).foregroundStyle(.red)
                 }
-            } label: {
-                Text("Sign Out")
+                
+                Button(role: .destructive) {
+                    let result = authManager.logout()
+                    if case .failure(let failure) = result {
+                        self.errorMessage = failure.localizedDescription
+                    } else {
+                        self.errorMessage = nil
+                    }
+                } label: {
+                    Text("Sign Out")
+                }
+            }
+            .onAppear {
+                authManager.fetchCurrentAppUser { _ in
+                    //leave it empty
+                    //for re-fetching purposes
+                    //when logged in it will profile page, we need fetch here.
+                }
             }
         }
-        .onAppear {
-            authManager.fetchCurrentAppUser { _ in
-                //leave it empty
-                //for re-fetching purposes
-                //when logged in it will profile page, we need fetch here.
-            }
-        }
+        .padding(.top, 30)
     }
 }
 

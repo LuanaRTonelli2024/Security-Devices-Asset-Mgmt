@@ -31,25 +31,17 @@ struct HomeView: View {
                     
                 case .home:
                     NavigationStack {
-                        VStack(alignment: .leading, spacing: 15) {
+                        VStack(spacing: 15) {
                             Text("Welcome \(authManager.currentUser?.displayName ?? "User")")
-                                .font(.largeTitle)
+                                .font(.headline)
                                 .background(Color(.systemBackground))
-                            //Text("\(authManager.currentUser?.displayName ?? "User")")
-                            //    .font(.title)
-                            //    .background(Color(.systemBackground))
-                            //Text("Security Devices Asset Management")
-                            //    .font(.largeTitle.bold())
-                            //    .background(Color(.systemBackground))
                                                             
                             Text("Please select the company:")
-                                .font(.title2)
+                                .font(.headline)
                                 .background(Color(.systemBackground))
                                 .foregroundStyle(.secondary)
                         }
                         .padding(.top, 30)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal)
                         .onAppear {
                             authManager.fetchCurrentAppUser { _ in }
                         }
@@ -67,42 +59,6 @@ struct HomeView: View {
                     
                 case .profile:
                     ProfileView()
-                    //VStack{
-                    //    Text("Welcome \(authManager.user?.email ?? "User")")
-                    //        .font(.title)
-                    //        .padding()
-                        
-                    //    Button {
-                    //        authManager.logout()
-                    //    }
-                    //    label: {
-                    //        Text("Logout")
-                    //            .foregroundStyle(.white)
-                    //            .background(.red)
-                    //            .padding()
-                    //            .cornerRadius(10)
-                    //    }
-                        
-                    //    Spacer()
-                    //}
-                        
-//                case .search:
-//                    VStack(alignment: .leading, spacing: 12){
-//                        Text("Search")
-//                            .font(.largeTitle.bold())
-//
-//                        if query.isEmpty{
-//                            Text("Type Something to Search...")
-//                                .foregroundStyle(.secondary)
-//                        } else {
-//                            Text("Results for: \(query)")
-//                                .foregroundStyle(.secondary)
-//                        }
-//
-//                        Spacer()
-//                    }
-//                    .padding()
- //                   .background(Color(.systemBackground))
                 }
             }
             .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -116,9 +72,6 @@ struct HomeView: View {
                     TabButton(title: "Home", system: "house.fill", active: selected == .home) {
                         withAnimation(.easeInOut) {
                             selected = .home
-                            
-                            //collapse the search box
-                            //collapseSearch()
                         }
                     }
                     
@@ -126,9 +79,6 @@ struct HomeView: View {
                     TabButton(title: "Companies", system: "building.2.fill", active: selected == .companies) {
                         withAnimation(.easeInOut) {
                             selected = .companies
-                            
-                            //collapse the search box
-                            //collapseSearch()
                         }
                     }
                     
@@ -136,14 +86,11 @@ struct HomeView: View {
                     TabButton(title: "Profile", system: "person.crop.circle", active: selected == .profile) {
                         withAnimation(.easeInOut) {
                             selected = .profile
-                            
-                            //collapse the search box
-                            //collapseSearch()
                         }
                     }
                     
                     //Spacer
-                    Spacer()//minLength: 0)
+                    Spacer()
                     
                 }
                 .padding(.horizontal, 16)
