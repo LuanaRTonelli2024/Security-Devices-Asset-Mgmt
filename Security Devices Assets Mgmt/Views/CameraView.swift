@@ -20,7 +20,7 @@ struct CameraView: View {
     //Scan QR code
     @State private var scannedCode: String?
     
-       
+    
     var body: some View {
         VStack{
             List {
@@ -32,14 +32,22 @@ struct CameraView: View {
                         NavigationLink(
                             destination: CameraDetailView(company: company, camera: $firebaseManager.cameras[index])
                         ) {
-                            VStack(alignment: .leading) {
-                                Text(firebaseManager.cameras[index].name)
-                                    .font(.headline)
-                                Text(firebaseManager.cameras[index].location)
-                                    .font(.subheadline)
+                            HStack(alignment: .center, spacing: 12){
+                                Image(systemName: "web.camera")
+                                    .font(.system(size: 24))
+                                    .foregroundStyle(.blue)
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(firebaseManager.cameras[index].name)
+                                        .font(.headline)
+                                    Text(firebaseManager.cameras[index].location)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
                     }
+                    .onDelete(perform: deleteCamera)
                 }
             }
         }
@@ -81,6 +89,13 @@ struct CameraView: View {
         .padding()
     }
     
+    private func deleteCamera(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let camera = firebaseManager.cameras[index]
+            
+            firebaseManager.deleteCamera(camera: camera)
+        }
+    }
     
     private var filteredCameraIndices: [Int] {
         if let scannedCode = scannedCode,
