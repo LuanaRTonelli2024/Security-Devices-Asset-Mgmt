@@ -18,13 +18,15 @@ struct CompanyView: View {
        
     var body: some View {
         VStack{
+            Text("Companies")
+                .font(.headline)
+                .background(Color(.systemBackground))
+            
             List {
                 ForEach(firebaseManager.companies) { company in
-                    HStack{
-                        //title
+                    HStack {
                         Text(company.name)
-                        
-                        //spacer
+        
                         Spacer()
                     }
                 }
@@ -46,8 +48,9 @@ struct CompanyView: View {
             .sheet(isPresented: $showNewCamera){
                 CompanyAddView()
             }
-            .navigationTitle("Companies")
+            //.navigationTitle("Companies")
             .padding()
+            
         }
     }
 }

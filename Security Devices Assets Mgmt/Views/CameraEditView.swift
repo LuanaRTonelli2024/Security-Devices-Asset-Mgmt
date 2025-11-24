@@ -77,7 +77,7 @@ struct CameraEditView: View {
             }
             else if selectedTab == "QR Code" {
                 VStack {
-                    Text("QR Code View")
+                    //Text("QR Code View")
                     if let id = camera.id {
                         QRCodeView(data: id)
                     } else {
