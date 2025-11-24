@@ -26,7 +26,7 @@ struct Security_Devices_Assets_MgmtApp: App {
     var body: some Scene {
         WindowGroup {
             AuthGate()
-                .environmentObject(AuthManager())
+                .environmentObject(authManager)
         }
     }
 }
