@@ -12,6 +12,9 @@ import FirebaseFirestore
 
 class AuthManager: ObservableObject {
     
+    //singleton pattern
+    static let shared = AuthManager()
+    
     @Published var user: User? // User -> FirebaseAuth.User
     
     private let db = Firestore.firestore()
@@ -73,13 +76,77 @@ class AuthManager: ObservableObject {
     }
     
     //logout/signout
-    func logout(){
+//    func logout(){
+//        do {
+//            try Auth.auth().signOut()
+//            self.user = nil
+//        }
+//        catch {
+//            print("Error Signing out: \(error.localizedDescription)")
+//        }
+//    }
+    
+    func logout() -> Result<Void, Error> {
         do {
             try Auth.auth().signOut()
             self.user = nil
+            self.currentUser = nil
+            return .success(())
+        } catch {
+            return .failure(error)
         }
-        catch {
-            print("Error Signing out: \(error.localizedDescription)")
+    }
+
+    
+    
+    //fetch current user (firestore)
+    func fetchCurrentAppUser(completion: @escaping (Result<AppUser?, Error>)-> Void){
+        guard let uid = Auth.auth().currentUser?.uid
+        else {
+            DispatchQueue.main.async {
+                self.currentUser = nil
+            }
+            return completion(.success(nil))
+        }
+        db.collection("users").document(uid).getDocument {snap, error in
+            if let error = error {
+                return completion(.failure(error))
+            }
+            guard let snap = snap else {
+                return completion(.success(nil))
+            }
+            do {
+                //destructure the stream of data to AppUser
+                let user = try snap.data(as: AppUser.self)
+                DispatchQueue.main.async {
+                    self.currentUser = user
+                }
+                completion(.success(user))
+            }
+            catch {
+                print(error.localizedDescription)
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    //update profile details
+    func updateProfile(displayName: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        //uid
+        guard let uid = Auth.auth().currentUser?.uid
+        else {
+            return completion(.failure(SimpleError("Unable to fetch User details")))
+        }
+        db.collection("users").document(uid).updateData(["displayName":displayName]) { error in
+            if let error = error {
+                return completion(.failure(error))
+            }
+            else {
+                //re-fetch the currentUser
+                self.fetchCurrentAppUser {_ in
+                    completion(.success(()))
+                }
+            }
         }
     }
 }

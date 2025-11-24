@@ -10,6 +10,7 @@ import SwiftUI
 struct OnBoardingScrenView: View {
     
     @EnvironmentObject var authManager: AuthManager
+    
     var body: some View {
         NavigationView{
             VStack(spacing: 30){
@@ -30,7 +31,7 @@ struct OnBoardingScrenView: View {
                         .foregroundStyle(.black.opacity(0.7))
                 }
                 Spacer()
-                NavigationLink(destination: LoginView()) {
+                NavigationLink(destination: LoginView().environmentObject(authManager)) {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(.blue)
                         .frame(width: 280, height: 60, alignment: .trailing)
