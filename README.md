@@ -1,16 +1,17 @@
-    SECURITY DEVICES ASSET MANAGEMENT (iOS Mobile Application)
+SECURITY DEVICES ASSET MANAGEMENT (iOS Mobile Application) 
+---
+**OVERVIEW**
 
-    OVERVIEW
 The main goal is to reduce the average incident resolution time by up to 80%, giving field technicians instant access to all camera information directly on their mobile devices.
 
-    EXPECTED BENEFITS
+**EXPECTED BENEFITS**
 - Reduce incident response time by up to 80%
 - Eliminate reliance on analysts for technical data
 - Provide quick access to location and visual references
 - Ensure accurate, up-to-date documentation
 - Improve technician autonomy, efficiency, and accuracy
 
-    FEATURES
+**FEATURES**
 - User Authentication: secure login for technicians
 - Add a New Camera:
   - Camera model and serial number
@@ -26,37 +27,28 @@ The main goal is to reduce the average incident resolution time by up to 80%, gi
 - Edit Camera Information: update IP, credentials, or other details
 - Delete Camera: remove records when a device is replaced or retired
 - Printer Communication: direct label printing from the app ---> COOMING SOON
-  
-    TECH STACK
+
+**TECH STACK**
 - Swift / SwiftUI
 - Firebase Firestore
 - Xcode
 - CoreLocation
 - Bluetooth/Wi-Fi APIs
-  
-      PROJECT STRUCTURE
-├── Assets/              # Icons and images
-├── Models/              # Data structures (Camera, User, Printer)
-├── Views/               # SwiftUI screens
-├── ViewModels/          # Logic and bindings
-├── Services/            # External integrations (Firestore, Printer)
-└── README.md            # Project documentation
 
-
-    INSTALLATION & USAGE
+**INSTALLATION & USAGE**
 - Clone this repository: git clone https://github.com/LuanarTonelli2024/security-devices-assets-management.git
 - Open the project in Xcode
 - Add your Firebase configuration file (GoogleService-Info.plist)
 - Build and run on a simulator or physical iOS device
 
-    CONTRIBUTIONS
+**CONTRIBUTIONS**
 Contributions are welcome!
   To collaborate:
 - Fork the project
 - Create a branch (feature/new-feature)
 - Submit a pull request
 
+**REFERENCES**
 
-    REFERENCES
 Scanning QR codes with SwiftUI - a free Hacking with iOS: SwiftUI Edition tutorial: https://www.hackingwithswift.com/books/ios-swiftui/scanning-qr-codes-with-swiftui
 
