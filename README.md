@@ -1,4 +1,4 @@
-SECURITY DEVICES ASSET MANAGEMENT (iOS Mobile Application)
+    SECURITY DEVICES ASSET MANAGEMENT (iOS Mobile Application)
 
     OVERVIEW
 The main goal is to reduce the average incident resolution time by up to 80%, giving field technicians instant access to all camera information directly on their mobile devices.
